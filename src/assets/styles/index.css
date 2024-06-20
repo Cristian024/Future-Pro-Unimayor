@@ -9,6 +9,10 @@
  
     --header-background:rgba(255, 255, 255, 0.5);
 
+    --login-form-background: rgb(239, 239, 239);
+    --input-form-background: rgb(216, 216, 216);
+    --input-form-text-color: rgb(0, 0, 0);
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
  
@@ -44,7 +48,11 @@
 
     --header-background:rgba(0, 0, 0, 0.5);
  
-    --muted: 217.2 32.6% 17.5%;
+    --login-form-background: rgb(10, 10, 10);
+    --input-form-background: rgb(255, 255, 255);
+    --input-form-text-color: black;
+
+    --muted: 0 0% 8%;
     --muted-foreground: 215 20.2% 65.1%;
  
     --popover: 222.2 84% 4.9%;

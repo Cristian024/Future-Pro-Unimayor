@@ -5,6 +5,8 @@ import router from './router';
 import { createApp } from 'vue'
 import App from './App.vue'
 
+console.log(import.meta.env);
+
 const app = createApp(App);
 
 app.use(router);
