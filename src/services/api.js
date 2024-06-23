@@ -1,4 +1,13 @@
-const url = 'http://localhost/uniApi/api/Index.php';
+// DEV
+const url = '/apiDev';
+
+// PRODUCTION
+/* const url = '/api' */
+
+const exceptionCode500 = {
+    code: 500,
+    message: 'Internal server error'
+}
 
 export const executeConsult = async (route, id) =>{
     return new Promise(async function (resolve, reject){
@@ -14,21 +23,51 @@ export const executeConsult = async (route, id) =>{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
+                    'Access-Control-Allow-Origin': '*',
+                    'access-token': 'Fq0830jA9h5pEeAvdTW5wDglb9JFqBju5RDtls5xKGVVXJAPOwto3bB5ivvVU14E'
                 }
             })
 
-            data = response.text()
-            const data_json = await data.then(res => {
+            const data_response = await response.text().then(res => {
                 return JSON.parse(res);
             })
 
-            if (data_json.status != null) {
-                reject(data_json)
+            if(data_response.code >= 400 && data_response.code <= 501){
+                reject(data_response)
             }
 
             resolve(data_json);
         } catch (error) {
-            reject('')
+            reject(exceptionCode500)
+        }
+    })
+}
+
+export const executeInsert = async (route, data) =>{
+    return new Promise(async function(resolve, reject){
+        const insertUrl = url + `?route=${route}`;
+        try {
+            const response = await fetch(insertUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Access-Control-Allow-Origin': '*',
+                    'access-token': 'Fq0830jA9h5pEeAvdTW5wDglb9JFqBju5RDtls5xKGVVXJAPOwto3bB5ivvVU14E'
+                },
+                body: JSON.stringify(data)
+            })
+
+            const data_response = await response.text().then(res => {
+                return JSON.parse(res);
+            })
+
+            if(data_response.code >= 400 && data_response.code <= 501){
+                reject(data_response)
+            }
+
+            resolve(data_response)
+        } catch (error) {
+            reject(exceptionCode500)
         }
     })
 }

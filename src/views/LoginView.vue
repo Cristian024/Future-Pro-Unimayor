@@ -1,25 +1,56 @@
 <script setup>
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../common/ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../common/ui/tabs';
 import { Input } from '@/common/ui/input';
 import { Button } from '@/common/ui/button';
-import * as api from '../services/api'
+import * as api from '../services/api';
+import { showMessagePopup } from '@/lib/toasty';
 
 var emailLogin;
 var passwordLogin;
 
-const validateLogin = async () => {
-    emailLogin = document.querySelector('#email-login');
-    passwordLogin = document.querySelector('#password-login');
+var emailRegister;
+var passwordRegister;
 
-    api.executeConsult('users', null).then(
+
+const validateLogin = async (e) => {
+    e.preventDefault();
+
+    const elements = e.target.elements;
+    var user = {
+        query: elements['email-login'].value,
+        password: elements['password-login'].value,
+    }
+
+    api.executeInsert('login', user).then(
         function (value) {
-            console.log(value);
+            
         },
         function (error) {
-
+            showMessagePopup(error.error, 'red');
         }
     )
 }
+
+const validateRegister = async(e) =>{
+    e.preventDefault();
+
+    const elements = e.target.elements;
+    var user = {
+        name: elements['name-register'].value,
+        email: elements['email-register'].value,
+        password: elements['password-register'].value,
+    }
+
+    api.executeInsert('register', user).then(
+        function(value){
+            
+        },
+        function(error){
+            showMessagePopup(error.error, 'red');
+        }
+    )
+}
+
 </script>
 
 <template>
@@ -37,14 +68,26 @@ const validateLogin = async () => {
                     </TabsTrigger>
                 </TabsList>
                 <TabsContent value="login">
-                    <Input type="email" placeholder="Correo institucional" id="email-login"
-                        class="input-form-login mt-12 h-[50px]" />
-                    <Input type="password" placeholder="Contraseña" id="password-login"
-                        class="input-form-login mt-8 h-[50px]" />
-                    <Button class="w-full mt-[80px]" v-on:click="validateLogin()">Ingresar</Button>
+                    <form v-on:submit="validateLogin($event)">
+                        <Input type="text" placeholder="Nombre o correo" id="email-login" class="input-form mt-12 h-[50px]"
+                            required />
+                        <Input type="password" placeholder="Contraseña" id="password-login" class="input-form mt-8 h-[50px]"
+                            required />
+                        <Button type="submit" class=" w-full mt-[80px]" value="Ingresar">Ingresar</Button>
+                    </form>
                 </TabsContent>
                 <TabsContent value="signup">
-                    Change your password here.
+                    <TabsContent value="signup">
+                        <form v-on:submit="validateRegister($event)">
+                            <Input type="text" placeholder="Nombre" id="name-register" class="input-form mt-12 h-[50px]"
+                                required />
+                            <Input type="email" placeholder="Correo" id="email-register" class="input-form mt-8 h-[50px]"
+                                required />
+                            <Input type="password" placeholder="Contraseña" id="password-register"
+                                class="input-form mt-8 h-[50px]" required />
+                            <Button type="submit" class=" w-full mt-[80px]" value="Ingresar">Registrar</Button>
+                        </form>
+                    </TabsContent>
                 </TabsContent>
             </Tabs>
         </div>
@@ -78,8 +121,7 @@ const validateLogin = async () => {
     border-radius: 10px 0 0 10px;
 }
 
-.login-container .input-form-login {
-    background-color: var(--input-form-background);
-    color: var(--input-form-text-color);
+.login-container .input-form {
+    border: solid var(--input-form-background) 1px;
 }
 </style>
