@@ -5,13 +5,6 @@ import { Button } from '@/common/ui/button';
 import * as api from '../services/api';
 import { showMessagePopup } from '@/lib/toasty';
 
-var emailLogin;
-var passwordLogin;
-
-var emailRegister;
-var passwordRegister;
-
-
 const validateLogin = async (e) => {
     e.preventDefault();
 
