@@ -4,6 +4,7 @@ import { Input } from '@/common/ui/input';
 import { Button } from '@/common/ui/button';
 import * as api from '../services/api';
 import { showMessagePopup } from '@/lib/toasty';
+import { navigate } from '@/lib/utils';
 
 const validateLogin = async (e) => {
     e.preventDefault();
@@ -36,7 +37,7 @@ const validateRegister = async(e) =>{
 
     api.executeInsert('register', user).then(
         function(value){
-            
+            navigate('formUserNew');
         },
         function(error){
             showMessagePopup(error.error, 'red');
