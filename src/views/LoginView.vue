@@ -5,9 +5,17 @@ import { Button } from '@/common/ui/button';
 import * as api from '../services/api';
 import { showMessagePopup } from '@/lib/toasty';
 import { navigate } from '@/lib/utils';
+import ActionLoader from '@/components/ActionLoader.vue';
+import { ref } from 'vue';
+
+var messageLoader = ref("")
+var showLoader = ref(false)
 
 const validateLogin = async (e) => {
     e.preventDefault();
+
+    messageLoader.value = "Validando credenciales"
+    showLoader.value = true;
 
     const elements = e.target.elements;
     var user = {
@@ -21,12 +29,19 @@ const validateLogin = async (e) => {
         },
         function (error) {
             showMessagePopup(error.error, 'red');
+        },
+    ). finally(
+        function(){
+            showLoader.value = false
         }
     )
 }
 
 const validateRegister = async(e) =>{
     e.preventDefault();
+
+    messageLoader.value = "Estamos creando tu usuario"
+    showLoader.value = true;
 
     const elements = e.target.elements;
     var user = {
@@ -42,14 +57,19 @@ const validateRegister = async(e) =>{
         function(error){
             showMessagePopup(error.error, 'red');
         }
+    ).finally(
+        function(){
+            showLoader.value = false
+        }
     )
 }
 
 </script>
 
 <template>
-    <div class="login-container">
+    <ActionLoader :message="messageLoader" :show="showLoader"></ActionLoader>
 
+    <div class="login-container">
         <div class="form-login-container">
             <h1 class="roboto-bold">Future Pro Unimayor</h1>
             <Tabs default-value="login">

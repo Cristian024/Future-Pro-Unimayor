@@ -13,6 +13,8 @@
     --input-form-background: rgb(216, 216, 216);
     --input-form-text-color: rgb(0, 0, 0);
 
+    --action-loader-background:rgba(255, 255, 255, 0.811);
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
  
@@ -51,6 +53,8 @@
     --login-form-background: rgb(10, 10, 10);
     --input-form-background: rgb(255, 255, 255);
     --input-form-text-color: black;
+
+    --action-loader-background:rgba(0, 0, 0, 0.913);
 
     --muted: 0 0% 8%;
     --muted-foreground: 215 20.2% 65.1%;
