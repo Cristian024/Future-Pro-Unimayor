@@ -2,27 +2,14 @@
 import { useRoute } from 'vue-router';
 import { Button } from '../common/ui/button'
 import ModeToggle from '../common/ui/mode-toggle/ModeToggle.vue'
-import { executeInsert } from '@/services/api';
 import { watch, ref } from 'vue';
 import { navigate } from '@/lib/utils';
+import {validateLogin} from '@/lib/session';
 
 const route = useRoute()
 const hiddenRoutes = ['/login'];
 
 const shouldShowButtonLogin = ref(true)
-
-const validateLogin = async () => {
-    let validSession = false
-    await executeInsert('validateSession', null).then(
-        () => {
-            validSession = true
-        },
-        () => {
-            validSession = false
-        }
-    )
-    return validSession
-}
 
 const updateShouldShowButtonLogin = async () => {
     const includesHidden = hiddenRoutes.includes(route.path)
@@ -31,7 +18,7 @@ const updateShouldShowButtonLogin = async () => {
     } else {
         const validSession = await validateLogin()
 
-        if (validSession) {
+        if (validSession.valid) {
             shouldShowButtonLogin.value = false
         } else {
             shouldShowButtonLogin.value = true;
