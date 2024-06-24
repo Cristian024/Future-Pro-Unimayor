@@ -6,7 +6,7 @@ const url = '/apiDev';
 
 const exceptionCode500 = {
     code: 500,
-    message: 'Internal server error'
+    error: 'Internal server error'
 }
 
 export const executeConsult = async (route, id) =>{
@@ -14,7 +14,7 @@ export const executeConsult = async (route, id) =>{
         var data;
         var consultUrl = url;
 
-        if (id !== null) consultUrl += `${id}`
+        if (id !== null) consultUrl += `/${id}`
 
         consultUrl += `?route=${route}`;
 
@@ -36,7 +36,7 @@ export const executeConsult = async (route, id) =>{
                 reject(data_response)
             }
 
-            resolve(data_json);
+            resolve(data_response);
         } catch (error) {
             reject(exceptionCode500)
         }

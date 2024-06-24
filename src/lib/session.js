@@ -7,10 +7,14 @@ export const validateLogin = async () => {
     }
 
     await executeInsert('validateSession', null).then(
-        (value) => {
+        function (value) {
             validSession.valid = true;
             validSession.user_id = value.data.user_id;
         },
+        function (error){
+            validSession.valid = false;
+            validSession.user_id = null;
+        }
     )
     return validSession
 }

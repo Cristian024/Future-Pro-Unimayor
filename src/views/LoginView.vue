@@ -25,19 +25,19 @@ const validateLogin = async (e) => {
 
     api.executeInsert('login', user).then(
         function (value) {
-            
+
         },
         function (error) {
             showMessagePopup(error.error, 'red');
         },
-    ). finally(
-        function(){
+    ).finally(
+        function () {
             showLoader.value = false
         }
     )
 }
 
-const validateRegister = async(e) =>{
+const validateRegister = async (e) => {
     e.preventDefault();
 
     messageLoader.value = "Estamos creando tu usuario"
@@ -46,19 +46,20 @@ const validateRegister = async(e) =>{
     const elements = e.target.elements;
     var user = {
         name: elements['name-register'].value,
+        last_name: elements['last_name-register'].value,
         email: elements['email-register'].value,
         password: elements['password-register'].value,
     }
 
     api.executeInsert('register', user).then(
-        function(value){
+        function (value) {
             navigate('formUserNew');
         },
-        function(error){
+        function (error) {
             showMessagePopup(error.error, 'red');
         }
     ).finally(
-        function(){
+        function () {
             showLoader.value = false
         }
     )
@@ -93,7 +94,9 @@ const validateRegister = async(e) =>{
                 <TabsContent value="signup">
                     <TabsContent value="signup">
                         <form v-on:submit="validateRegister($event)">
-                            <Input type="text" placeholder="Nombre" id="name-register" class="input-form mt-12 h-[50px]"
+                            <Input type="text" placeholder="Nombres" id="name-register" class="input-form mt-12 h-[50px]"
+                                required />
+                            <Input type="text" placeholder="Apellidos" id="last_name-register" class="input-form mt-8 h-[50px]"
                                 required />
                             <Input type="email" placeholder="Correo" id="email-register" class="input-form mt-8 h-[50px]"
                                 required />

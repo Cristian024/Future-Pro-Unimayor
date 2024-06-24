@@ -52,7 +52,7 @@
  
     --login-form-background: rgb(10, 10, 10);
     --input-form-background: rgb(255, 255, 255);
-    --input-form-text-color: black;
+    --input-form-text-color: rgb(255, 255, 255);
 
     --action-loader-background:rgba(0, 0, 0, 0.913);
 

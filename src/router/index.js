@@ -15,7 +15,7 @@ const router = createRouter({
         },{
             path: '/formUserNew',
             name: 'formUserNew',
-            component: () => import('../views/FormUserNew.vue')
+            component: () => import('../views/FormUserNewView.vue')
         }
     ]
 })
