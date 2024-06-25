@@ -1,9 +1,6 @@
 <script setup>
 import ModeToggle from '../common/ui/mode-toggle/ModeToggle.vue'
 import LoginButton from '@/components/buttons/LoginButton.vue'
-import { useRoute } from 'vue-router';
-
-const route = useRoute();
 
 </script>
 
@@ -11,7 +8,7 @@ const route = useRoute();
     <header>
         <div class="logo-container"></div>
         <div class="buttons-container">
-            <LoginButton :routePath="route.path" />
+            <LoginButton/>
             <ModeToggle></ModeToggle>
         </div>
     </header>

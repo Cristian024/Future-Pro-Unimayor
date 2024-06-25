@@ -11,10 +11,22 @@ export const validateLogin = async () => {
             validSession.valid = true;
             validSession.user_id = value.data.user_id;
         },
-        function (error){
+        function (error) {
             validSession.valid = false;
             validSession.user_id = null;
         }
     )
     return validSession
+}
+
+export const validateSessionCookie = () => {
+    const cookies = document.cookie
+
+    const cookieExists = cookies.split(';').some((cookie) => {
+        return cookie.trim().startsWith('session' + '=');
+    });
+
+    console.log(cookieExists);
+
+    return cookieExists;
 }
