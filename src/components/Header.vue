@@ -1,38 +1,9 @@
 <script setup>
-import { useRoute } from 'vue-router';
-import { Button } from '../common/ui/button'
 import ModeToggle from '../common/ui/mode-toggle/ModeToggle.vue'
-import { watch, ref } from 'vue';
-import { navigate } from '@/lib/utils';
-import {validateLogin} from '@/lib/session';
+import LoginButton from '@/components/buttons/LoginButton.vue'
+import { useRoute } from 'vue-router';
 
-const route = useRoute()
-const hiddenRoutes = ['/login'];
-
-const shouldShowButtonLogin = ref(true)
-
-const updateShouldShowButtonLogin = async () => {
-    const includesHidden = hiddenRoutes.includes(route.path)
-    if (includesHidden) {
-        shouldShowButtonLogin.value = false
-    } else {
-        const validSession = await validateLogin()
-
-        if (validSession.valid) {
-            shouldShowButtonLogin.value = false
-        } else {
-            shouldShowButtonLogin.value = true;
-        }
-    }
-}
-
-watch(
-    () => route.path,
-    async () => {
-        await updateShouldShowButtonLogin()
-    },
-    { immediate: true }
-)
+const route = useRoute();
 
 </script>
 
@@ -40,7 +11,7 @@ watch(
     <header>
         <div class="logo-container"></div>
         <div class="buttons-container">
-            <Button class="roboto-regular" v-if="shouldShowButtonLogin" v-on:click="navigate('login')">Ingresa</Button>
+            <LoginButton :routePath="route.path" />
             <ModeToggle></ModeToggle>
         </div>
     </header>
