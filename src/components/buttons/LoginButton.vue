@@ -1,6 +1,6 @@
 <script setup>
 import { Button } from '@/common/ui/button'
-import { navigate } from '@/lib/utils';
+import { navigate } from '@/lib/navigation';
 import { validateSessionCookie } from '@/lib/session';
 
 </script>

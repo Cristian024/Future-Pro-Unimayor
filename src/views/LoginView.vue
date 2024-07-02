@@ -5,7 +5,7 @@ import { Button } from '@/common/ui/button';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/common/ui/select';
 import * as api from '../services/api';
 import { showMessagePopup } from '@/lib/toasty';
-import { navigate } from '@/lib/utils';
+import { navigate } from '@/lib/navigation';
 import ActionLoader from '@/components/ActionLoader.vue';
 import { ref } from 'vue';
 

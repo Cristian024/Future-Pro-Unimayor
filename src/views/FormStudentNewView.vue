@@ -3,7 +3,7 @@ import { Button } from '@/common/ui/button';
 import { Input } from '@/common/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, } from '@/common/ui/select';
 import { showMessagePopup } from '@/lib/toasty';
-import { navigate } from '@/lib/utils';
+import { navigate } from '@/lib/navigation';
 import { executeUpdate } from '@/services/api';
 import { ref } from 'vue';
 
