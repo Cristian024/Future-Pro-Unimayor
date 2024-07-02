@@ -1,26 +1,11 @@
-import { validateSession, validateSessionCookie } from '@/lib/session';
+import { validateSessionCookie } from '@/lib/session';
 import { createRouter, createWebHistory } from 'vue-router';
+import { routes } from './routes';
 import store from '@/store';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
-    routes: [
-        {
-            path: '/',
-            name: 'home',
-            component: () => import("../views/HomeView.vue"),
-        },
-        {
-            path: '/login',
-            name: 'login',
-            component: () => import('../views/LoginView.vue')
-        }, {
-            path: '/formStudentNew',
-            name: 'formStudentNew',
-            component: () => import('../views/FormStudentNewView.vue'),
-            meta: {requireAuto: true, type: 'student'}
-        }
-    ]
+    routes: routes
 })
 
 router.beforeEach(async (to, from, next) => {
