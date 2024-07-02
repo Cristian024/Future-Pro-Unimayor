@@ -71,3 +71,32 @@ export const executeInsert = async (route, data) =>{
         }
     })
 }
+
+export const executeUpdate = async (route, data, id) =>{
+    return new Promise(async function(resolve, reject){
+        const updateUrl = url + `/${id}?route=${route}`;
+        try {
+            const response = await fetch(updateUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Access-Control-Allow-Origin': '*',
+                    'access-token': 'Fq0830jA9h5pEeAvdTW5wDglb9JFqBju5RDtls5xKGVVXJAPOwto3bB5ivvVU14E'
+                },
+                body: JSON.stringify(data)
+            })
+
+            const data_response = await response.text().then(res => {
+                return JSON.parse(res);
+            })
+
+            if(data_response.code >= 400 && data_response.code <= 501){
+                reject(data_response)
+            }
+
+            resolve(data_response)
+        } catch (error) {
+            reject(exceptionCode500)
+        }
+    })
+}

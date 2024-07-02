@@ -2,53 +2,52 @@
 import { Button } from '@/common/ui/button';
 import { Input } from '@/common/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, } from '@/common/ui/select';
-import { validateLogin } from '@/lib/session';
 import { showMessagePopup } from '@/lib/toasty';
 import { navigate } from '@/lib/utils';
-import { executeConsult } from '@/services/api';
-import { onMounted, ref } from 'vue';
+import { executeUpdate } from '@/services/api';
+import { ref } from 'vue';
 
 var user = ref({})
 
-onMounted(async()=>{
-    const session = await validateLogin()
+const updateInfo = (e) => {
+    e.preventDefault();
 
-    if(session.valid){
-        const userId = session.user_id;
-        executeConsult('user', userId).then(
-            function(value){
-                user.value = value.data[0]
-            },
-            function(error){
-                showMessagePopup(error.error, 'red')
-            }
-        )
-    }else{
-        navigate('../');
-    }
-})
+    var user_u = user.value;
+    delete user_u.email;
+
+    console.log(user_u);
+
+    executeUpdate('student', user_u, user_u.id).then(
+        function(value){
+            
+        },
+        function(error){
+            showMessagePopup(error.error, 'red')
+        }
+    )
+}
 
 </script>
 
 <template>
-    <form>
+    <form v-on:submit="updateInfo($event)">
         <fieldset>
             <legend>Información Personal</legend>
 
             <label for="firstName">Nombre:</label>
-            <Input type="text" id="firstName" name="firstName" required :value="user.name"/><br><br>
+            <Input type="text" id="firstName" name="firstName" required v-model:model-value="user.first_name" /><br><br>
 
             <label for="lastName">Apellido:</label>
-            <Input type="text" id="lastName" name="lastName" required :value="user.last_name" /><br><br>
+            <Input type="text" id="lastName" name="lastName" required v-model:model-value="user.last_name" /><br><br>
 
             <label for="email">Correo Electrónico:</label>
-            <Input type="email" id="email" name="email" required  :value="user.email" /><br><br>
+            <Input type="email" id="email" name="email" required disabled v-model:model-value="user.email" /><br><br>
 
             <label for="phone">Teléfono:</label>
-            <Input type="tel" id="phone" name="phone" :value="user.cellphone"/><br><br>
+            <Input type="tel" id="phone" name="phone" /><br><br>
 
             <label for="dob">Fecha de Nacimiento:</label>
-            <Input type="date" name="dob" id="dob" :value="user.date_of_birth" /><br><br>
+            <Input type="date" name="dob" id="dob" /><br><br>
 
             <label for="gender">Género:</label>
             <Select :value="user.gender">
@@ -77,28 +76,28 @@ onMounted(async()=>{
         <fieldset>
             <legend>Información Académica</legend>
             <label>Facultad</label>
-            <Input type="text" ></Input><br><br>
+            <Input type="text"></Input><br><br>
 
             <label for="course">Carrera:</label>
-            <Input type="text" id="course" name="course" required /><br><br>
+            <Input type="text" id="course" name="course" /><br><br>
 
             <label>Código estudiantil</label>
             <Input type="number"></Input><br><br>
         </fieldset>
 
-        <Button type="submit" value="Registrar" >Confirmar</Button>
+        <Button type="submit" value="Registrar">Confirmar</Button>
     </form>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </template>
 
 <style scoped>
-form{
+form {
     padding: 20px;
     margin-top: 100px;
 }
 
-input[type="date"]{
+input[type="date"] {
     position: relative;
 }
 

@@ -1,12 +1,12 @@
 import { executeInsert } from "@/services/api"
 
-export const validateLogin = async () => {
+export const validateSession = async (type) => {
     let validSession = {
         valid: false,
         user_id: null
     }
 
-    await executeInsert('validateSession', null).then(
+    await executeInsert(`validateSession${type.charAt(0).toUpperCase() + type.slice(1)}`, null).then(
         function (value) {
             validSession.valid = true;
             validSession.user_id = value.data.user_id;
@@ -25,8 +25,6 @@ export const validateSessionCookie = () => {
     const cookieExists = cookies.split(';').some((cookie) => {
         return cookie.trim().startsWith('session' + '=');
     });
-
-    console.log(cookieExists);
 
     return cookieExists;
 }

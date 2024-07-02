@@ -42,36 +42,27 @@ const validateLogin = async (e) => {
 const validateRegister = async (e, type) => {
     e.preventDefault();
 
+    if(type != 'student' && type != 'enterprise') return;
+
     messageLoader.value = "Estamos creando tu usuario"
     showLoader.value = true;
 
     const elements = e.target.elements;
 
-    var user;
-
-    if (type == 'student') {
-        user = {
-            name: elements['name-register'].value,
-            last_name: elements['last_name-register'].value,
-            email: elements['email-register'].value,
-            password: elements['password-register'].value,
-        }
-    } else if(type == 'enterprise'){
-        user = {
-            name: elements['name-register'].value,
-            last_name: elements['nit-register'].value,
-            email: elements['email-register'].value,
-            password: elements['password-register'].value,
-        }
+    var user = {
+        role: type,
+        email: elements['email-register'].value,
+        password: elements['password-register'].value,
     }
 
     api.executeInsert('register', user).then(
         function (value) {
-            var route = (type=='student') ? 'formStudentNew' || (type == 'enterprise') : 'formEnterpriseNew';
+            var route = (type == 'student') ? 'formStudentNew' || (type == 'enterprise') : 'formEnterpriseNew';
+
             navigate(route);
         },
         function (error) {
-            showMessagePopup('Ocurrió un error al registrar el usuario', 'red');
+            showMessagePopup(error.error, 'red');
         }
     ).finally(
         function () {
@@ -133,10 +124,6 @@ export default {
                             </SelectContent>
                         </Select>
                         <form v-on:submit="validateRegister($event, 'student')" v-if="selectedValue == 'student'">
-                            <Input type="text" placeholder="Nombres" id="name-register" class="input-form mt-12 h-[50px]"
-                                required />
-                            <Input type="text" placeholder="Apellidos" id="last_name-register"
-                                class="input-form mt-8 h-[50px]" required />
                             <Input type="email" placeholder="Correo" id="email-register" class="input-form mt-8 h-[50px]"
                                 required />
                             <Input type="password" placeholder="Contraseña" id="password-register"
@@ -145,10 +132,6 @@ export default {
                         </form>
 
                         <form v-on:submit="validateRegister($event, 'enterprise')" v-if="selectedValue == 'enterprise'">
-                            <Input type="text" placeholder="Nombre" id="name-register" class="input-form mt-12 h-[50px]"
-                                required />
-                            <Input type="number" placeholder="NIT" id="nit-register" class="input-form mt-8 h-[50px]"
-                                required />
                             <Input type="email" placeholder="Correo" id="email-register" class="input-form mt-8 h-[50px]"
                                 required />
                             <Input type="password" placeholder="Contraseña" id="password-register"
