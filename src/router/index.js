@@ -1,5 +1,6 @@
 import { validateSession, validateSessionCookie } from '@/lib/session';
 import { createRouter, createWebHistory } from 'vue-router';
+import store from '@/store';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,25 +23,25 @@ const router = createRouter({
     ]
 })
 
-router.beforeEach(async (to, from, next) =>{
-    if(to.matched.some(route => route.meta.requireAuto)){
+router.beforeEach(async (to, from, next) => {
+    if (to.matched.some(route => route.meta.requireAuto)) {
         const hasCookie = validateSessionCookie();
-        if(hasCookie){
-            const type = to.meta.type
-            const session = await validateSession(type);
+        if (hasCookie) {
+            const type = to.meta.type;
+            const session = await store.dispatch('validateSession', type);
 
-            if(session.valid){
+            if (session.valid) {
                 next();
-            }else{
-                next('../')
+            } else {
+                next('/');
             }
-        }else{
-            next('../')
+        } else {
+            next('/');
         }
-    }else{
-        next()
+    } else {
+        next();
     }
-})
+});
 
 
 export default router;

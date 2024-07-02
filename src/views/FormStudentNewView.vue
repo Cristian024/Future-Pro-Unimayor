@@ -4,8 +4,25 @@ import { Input } from '@/common/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, } from '@/common/ui/select';
 import { showMessagePopup } from '@/lib/toasty';
 import { navigate } from '@/lib/navigation';
-import { executeUpdate } from '@/services/api';
-import { ref } from 'vue';
+import { executeConsult, executeUpdate } from '@/services/api';
+import { ref, computed, onMounted } from 'vue';
+import { useStore } from 'vuex';
+
+onMounted(() => {
+    const store = useStore();
+    const session = computed(() => store.getters.session).value;
+
+    if(session.valid){
+        executeConsult('student_by_user_id', session.user_id).then(
+            function(value){
+                user.value = value.data[0];
+            },
+            function(error){
+                showMessagePopup(error.error, 'red');
+            }
+        )
+    }
+})
 
 var user = ref({})
 
@@ -18,10 +35,10 @@ const updateInfo = (e) => {
     console.log(user_u);
 
     executeUpdate('student', user_u, user_u.id).then(
-        function(value){
-            
+        function (value) {
+
         },
-        function(error){
+        function (error) {
             showMessagePopup(error.error, 'red')
         }
     )
