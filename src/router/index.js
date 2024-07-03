@@ -16,6 +16,7 @@ router.beforeEach(async (to, from, next) => {
             const session = await store.dispatch('validateSession', type);
 
             if (session.valid) {
+                await store.dispatch('consultUser', {type: type, user_id: session.user_id})
                 next();
             } else {
                 next('/');

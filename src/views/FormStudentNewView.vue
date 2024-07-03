@@ -4,24 +4,15 @@ import { Input } from '@/common/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, } from '@/common/ui/select';
 import { showMessagePopup } from '@/lib/toasty';
 import { navigate } from '@/lib/navigation';
-import { executeConsult, executeUpdate } from '@/services/api';
+import { executeUpdate } from '@/services/api';
 import { ref, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 onMounted(() => {
     const store = useStore();
-    const session = computed(() => store.getters.session).value;
+    user.value = computed(() => store.getters.user).value
 
-    if(session.valid){
-        executeConsult('student_by_user_id', session.user_id).then(
-            function(value){
-                user.value = value.data[0];
-            },
-            function(error){
-                showMessagePopup(error.error, 'red');
-            }
-        )
-    }
+    console.log(user.value);
 })
 
 var user = ref({})
@@ -29,7 +20,7 @@ var user = ref({})
 const updateInfo = (e) => {
     e.preventDefault();
 
-    var user_u = user.value;
+    var user_u = Object.assign({}, user.value);
     delete user_u.email;
 
     console.log(user_u);
@@ -61,13 +52,13 @@ const updateInfo = (e) => {
             <Input type="email" id="email" name="email" required disabled v-model:model-value="user.email" /><br><br>
 
             <label for="phone">Teléfono:</label>
-            <Input type="tel" id="phone" name="phone" /><br><br>
+            <Input type="tel" id="phone" name="phone" required v-model:model-value="user.cellphone" /><br><br>
 
             <label for="dob">Fecha de Nacimiento:</label>
-            <Input type="date" name="dob" id="dob" /><br><br>
+            <Input type="date" name="dob" id="dob" required v-model:model-value="user.date_of_birth" /><br><br>
 
             <label for="gender">Género:</label>
-            <Select :value="user.gender">
+            <Select required v-model:model-value="user.gender">
                 <SelectTrigger class="w-[180px]">
                     <SelectValue placeholder="Selecciona un genero" />
                 </SelectTrigger>
