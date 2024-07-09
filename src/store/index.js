@@ -4,10 +4,14 @@ import { executeConsult } from '@/services/api';
 
 export default createStore({
     state: {
+        name: null,
         session: null,
         user: null
     },
     mutations: {
+        setName(state, name){
+            state.name = name;
+        },
         setSession(state, session) {
             state.session = session;
         },
@@ -35,6 +39,10 @@ export default createStore({
             )
             commit('setUser', user)
             return user;
+        },
+        setName({commit}, name){
+            commit('setName', name)
+            return name;
         }
     },
     getters: {
@@ -43,6 +51,9 @@ export default createStore({
         },
         user(state){
             return state.user
+        },
+        name(state){
+            return state.name;
         }
     },
 });

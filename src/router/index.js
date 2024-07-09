@@ -9,6 +9,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+    store.dispatch('setName', to.name);
     if (to.matched.some(route => route.meta.requireAuto)) {
         const hasCookie = validateSessionCookie();
         if (hasCookie) {

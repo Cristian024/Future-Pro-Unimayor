@@ -1,17 +1,18 @@
 export const routes = [
     {
         path: '/',
-        name: 'home',
+        name: 'Home',
         component: () => import("../views/HomeView.vue"),
     },
     {
         path: '/login',
-        name: 'login',
+        name: 'Login',
         component: () => import('../views/LoginView.vue')
-    }, {
+    },
+    {
         path: '/formStudentNew',
-        name: 'formStudentNew',
+        name: 'FormStudentNew',
         component: () => import('../views/FormStudentNewView.vue'),
-        meta: {requireAuto: true, type: 'student'}
+        meta: { requireAuto: true, type: 'student' }
     }
 ]

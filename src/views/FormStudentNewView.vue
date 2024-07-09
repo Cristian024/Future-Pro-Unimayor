@@ -4,26 +4,55 @@ import { Input } from '@/common/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, } from '@/common/ui/select';
 import { showMessagePopup } from '@/lib/toasty';
 import { navigate } from '@/lib/navigation';
-import { executeUpdate } from '@/services/api';
-import { ref, computed, onMounted } from 'vue';
+import { executeConsult, executeUpdate } from '@/services/api';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 
-onMounted(() => {
-    const store = useStore();
-    user.value = computed(() => store.getters.user).value
+var user = ref({})
+var faculties = ref([]);
+var careers = ref([]);
+var career_user = ref("");
+var faculty_user = ref("");
 
-    console.log(user.value);
+const store = useStore();
+
+onMounted(async () => {
+    await executeConsult('faculties', null).then(
+        function (value) {
+            faculties.value = value.data;
+        },
+        function (error) {
+            showMessagePopup(error.error);
+        }
+    )
+
+    user.value = computed(() => store.getters.user).value
+    if (user.value.faculty != null) {
+        faculty_user.value = user.value.faculty;
+    }
 })
 
-var user = ref({})
+watch(faculty_user, (faculty) => {
+    user.value.faculty = faculty;
+    executeConsult('career_by_faculty', faculty).then(
+        function (value) {
+            careers.value = value.data;
+        },
+        function (error) {
+            showMessagePopup(error.error);
+        }
+    )
+})
+
+watch(career_user, (career) => {
+    user.value.career = career;
+})
 
 const updateInfo = (e) => {
     e.preventDefault();
 
     var user_u = Object.assign({}, user.value);
     delete user_u.email;
-
-    console.log(user_u);
 
     executeUpdate('student', user_u, user_u.id).then(
         function (value) {
@@ -84,13 +113,35 @@ const updateInfo = (e) => {
         <fieldset>
             <legend>Información Académica</legend>
             <label>Facultad</label>
-            <Input type="text"></Input><br><br>
+            <Select required v-model:model-value="faculty_user">
+                <SelectTrigger class="w-[180px]">
+                    <SelectValue placeholder="Selecciona tu facultad" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup v-for="faculty in faculties">
+                        <SelectItem :value="faculty.id">
+                            {{ faculty.name }}
+                        </SelectItem>
+                    </SelectGroup>
+                </SelectContent>
+            </Select><br><br>
 
             <label for="course">Carrera:</label>
-            <Input type="text" id="course" name="course" /><br><br>
+            <Select required v-model:model-value="career_user">
+                <SelectTrigger class="w-[180px]">
+                    <SelectValue placeholder="Selecciona tu carrera" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup v-for="career in careers">
+                        <SelectItem :value="career.id">
+                            {{ career.name }}
+                        </SelectItem>
+                    </SelectGroup>
+                </SelectContent>
+            </Select><br><br>
 
             <label>Código estudiantil</label>
-            <Input type="number"></Input><br><br>
+            <Input type="number" v-model:model-value="user.code"></Input><br><br>
         </fieldset>
 
         <Button type="submit" value="Registrar">Confirmar</Button>
