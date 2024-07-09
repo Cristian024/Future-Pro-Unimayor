@@ -14,5 +14,11 @@ export const routes = [
         name: 'FormStudentNew',
         component: () => import('../views/FormStudentNewView.vue'),
         meta: { requireAuto: true, type: 'student' }
+    },
+    {
+        path: '/formEnterpriseNew',
+        name: 'FormEnterpriseNew',
+        component: () => import('../views/FormEnterpriseNewView.vue'),
+        meta: { requireAuto: true, type: 'enterprise' }
     }
 ]
