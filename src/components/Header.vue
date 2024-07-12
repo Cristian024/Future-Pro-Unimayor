@@ -1,6 +1,7 @@
 <script setup>
 import ModeToggle from '../common/ui/mode-toggle/ModeToggle.vue'
 import LoginButton from '@/components/buttons/LoginButton.vue'
+import LogoutButton from './buttons/LogoutButton.vue';
 
 </script>
 
@@ -9,6 +10,7 @@ import LoginButton from '@/components/buttons/LoginButton.vue'
         <div class="logo-container"></div>
         <div class="buttons-container">
             <LoginButton/>
+            <LogoutButton/>
             <ModeToggle></ModeToggle>
         </div>
     </header>
