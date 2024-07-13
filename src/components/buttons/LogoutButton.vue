@@ -41,7 +41,7 @@ export default {
 </script>
 
 <template>
-    <Button class="roboto-regular" v-if="shouldShowButton" v-on:click="logout()">Salir</Button>
+    <Button class="roboto-regular" v-if="shouldShowButton" v-on:click="logout()">Cerrar sesión</Button>
 </template>
 
 <style scoped></style>

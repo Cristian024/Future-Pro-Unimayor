@@ -12,6 +12,8 @@
     --login-form-background: rgb(239, 239, 239);
     --input-form-background: rgb(216, 216, 216);
     --input-form-text-color: rgb(0, 0, 0);
+    
+    --buttons-home-bg: rgb(236, 236, 236);
 
     --action-loader-background:rgba(255, 255, 255, 0.811);
 
@@ -53,6 +55,8 @@
     --login-form-background: rgb(10, 10, 10);
     --input-form-background: rgb(255, 255, 255);
     --input-form-text-color: rgb(255, 255, 255);
+
+    --buttons-home-bg: rgb(24, 24, 24);
 
     --action-loader-background:rgba(0, 0, 0, 0.913);
 

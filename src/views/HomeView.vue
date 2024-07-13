@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import NavigationHome from '@/components/NavigationHome.vue';
 
 var user = ref({});
 var session = ref({});
@@ -10,22 +11,42 @@ const store = useStore();
 onMounted(async () => {
     user.value = computed(() => store.getters.user).value
     session.value = computed(() => store.getters.session).value
-    console.log(session.value);
 })
 
 </script>
 
 <template>
     <div class="home-container">
-        <section>
-            <div class="profile-resume">
-                <img id="profile-image">
-                <h2 id="profile-name"></h2>
-            </div>
+        <section class="section-1">
+            <NavigationHome :session="session.valid" :user="user" type=""/>
         </section>
         <section></section>
         <section></section>
     </div>
 </template>
 
-<style></style>
+<style>
+.home-container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100vh;
+    padding: 70px 20px 0px 20px;
+    overflow: hidden;
+}
+
+.home-container section {
+    height: calc(100% - 70px);
+}
+
+.home-container .section-1 {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+}
+
+
+</style>

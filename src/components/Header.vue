@@ -1,7 +1,6 @@
 <script setup>
 import ModeToggle from '../common/ui/mode-toggle/ModeToggle.vue'
 import LoginButton from '@/components/buttons/LoginButton.vue'
-import LogoutButton from './buttons/LogoutButton.vue';
 
 </script>
 
@@ -10,7 +9,6 @@ import LogoutButton from './buttons/LogoutButton.vue';
         <div class="logo-container"></div>
         <div class="buttons-container">
             <LoginButton/>
-            <LogoutButton/>
             <ModeToggle></ModeToggle>
         </div>
     </header>
@@ -19,6 +17,9 @@ import LogoutButton from './buttons/LogoutButton.vue';
 <style scoped>
 header {
     width: 100%;
+    max-height: 50px;
+    min-height: 50px;
+    height: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -27,7 +28,8 @@ header {
     padding: 10px;
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
-    background-color: var(--header-background)
+    background-color: var(--header-background);
+    z-index: 10;
 }
 
 Button {
