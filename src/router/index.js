@@ -19,10 +19,15 @@ router.beforeEach(async (to, from, next) => {
             if (session.valid) {
                 await store.dispatch('consultUser', {type: type, user_id: session.user_id})
                 next();
-            } else {
-                next('/');
+            } else if(!session.valid && to.meta.autoOptional){
+                next();
+            } else if(!session.valid && !to.meta.autoOptional){
+                next('/login');
             }
-        } else {
+        } else if(to.meta.autoOptional) {
+            await store.dispatch('temporalSession');
+            next();
+        } else{
             next('/');
         }
     } else {

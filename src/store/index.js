@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import { validateSession } from '@/lib/session';
+import { createTemporalSession, validateSession } from '@/lib/session';
 import { executeConsult } from '@/services/api';
 
 export default createStore({
@@ -22,6 +22,11 @@ export default createStore({
     actions: {
         async validateSession({ commit }, type) {
             const session = await validateSession(type);
+            commit('setSession', session);
+            return session;
+        },
+        async temporalSession({commit}){
+            const session = createTemporalSession();
             commit('setSession', session);
             return session;
         },

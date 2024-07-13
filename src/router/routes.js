@@ -3,6 +3,7 @@ export const routes = [
         path: '/',
         name: 'Home',
         component: () => import("../views/HomeView.vue"),
+        meta: { requireAuto: true, type: 'any', autoOptional: true }
     },
     {
         path: '/login',
@@ -13,12 +14,12 @@ export const routes = [
         path: '/formStudentNew',
         name: 'FormStudentNew',
         component: () => import('../views/FormStudentNewView.vue'),
-        meta: { requireAuto: true, type: 'student' }
+        meta: { requireAuto: true, type: 'student', autoOptional: false }
     },
     {
         path: '/formEnterpriseNew',
         name: 'FormEnterpriseNew',
         component: () => import('../views/FormEnterpriseNewView.vue'),
-        meta: { requireAuto: true, type: 'enterprise' }
+        meta: { requireAuto: true, type: 'enterprise', autoOptional: false }
     }
 ]

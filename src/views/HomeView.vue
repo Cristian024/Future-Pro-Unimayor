@@ -1,27 +1,31 @@
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useStore } from 'vuex';
+
+var user = ref({});
+var session = ref({});
+
+const store = useStore();
+
+onMounted(async () => {
+    user.value = computed(() => store.getters.user).value
+    session.value = computed(() => store.getters.session).value
+    console.log(session.value);
+})
 
 </script>
 
 <template>
-    <div class="landing-page-container">
-        <h1 class="roboto-thin phrase">Conviertete en algo más que un <b>estudiante.</b></h1>
+    <div class="home-container">
+        <section>
+            <div class="profile-resume">
+                <img id="profile-image">
+                <h2 id="profile-name"></h2>
+            </div>
+        </section>
+        <section></section>
+        <section></section>
     </div>
 </template>
 
-<style>
-    .landing-page-container{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        max-width: 100vw;
-        width: 100%;
-        min-height: 100vh;
-    }
-
-    .landing-page-container .phrase{
-        font-size: clamp(2rem, 4vw, 10rem);
-        text-align: center;
-        line-height: 2rem;
-    }
-</style>
+<style></style>

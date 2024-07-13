@@ -19,6 +19,15 @@ export const validateSession = async (type) => {
     return validSession
 }
 
+export const createTemporalSession = () =>{
+    let session = {
+        valid: false,
+        user_id: null
+    }
+
+    return session;
+}
+
 export const validateSessionCookie = () => {
     const cookies = document.cookie
 
