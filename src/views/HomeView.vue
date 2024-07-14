@@ -1,12 +1,12 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import NavigationHome from '@/components/NavigationHome.vue';
 import Contacts from '@/components/Contacts.vue';
+import ChatDesplegable from '@/components/chat/ChatDesplegable.vue';
 
 var user = ref({});
 var session = ref({});
-
 const store = useStore();
 
 onMounted(async () => {
@@ -19,14 +19,35 @@ onMounted(async () => {
 <template>
     <div class="home-container">
         <section class="section-1 left-[20px]">
-            <NavigationHome :session="session.valid" :user="user" type=""/>
+            <NavigationHome :session="session.valid" :user="user" type="" />
         </section>
         <section></section>
         <section class="section-3 right-[20px]">
-            <Contacts :user="user"/>
+            <Contacts @showActiveUserChat="listenerActiveUserChat"/>
         </section>
+        <ChatDesplegable class="fixed bottom-[0] right-[20px]" v-if="ActiveUserChat != null" :user="ActiveUserChat"/>
     </div>
 </template>
+
+<script>
+import Contacts from '@/components/Contacts.vue';
+export default {
+    data() {
+        return {
+            ActiveUserChat: null
+        }
+    },
+    components() {
+        Contacts
+    },
+    methods: {
+        listenerActiveUserChat(value) {
+            this.ActiveUserChat = value;
+        }
+    }
+}
+
+</script>
 
 <style>
 .home-container {
@@ -52,6 +73,4 @@ onMounted(async () => {
     position: absolute;
     top: 70px;
 }
-
-
 </style>

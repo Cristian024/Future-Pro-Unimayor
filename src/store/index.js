@@ -6,7 +6,8 @@ export default createStore({
     state: {
         name: null,
         session: null,
-        user: null
+        user: null,
+        activeUserChat: null
     },
     mutations: {
         setName(state, name){
@@ -17,6 +18,9 @@ export default createStore({
         },
         setUser(state, user){
             state.user = user;
+        },
+        setActiveUserChat(state, activeUserChat){
+            state.activeUserChat = activeUserChat
         }
     },
     actions: {
@@ -48,6 +52,10 @@ export default createStore({
         setName({commit}, name){
             commit('setName', name)
             return name;
+        },
+        async activeUserChat({commit}, data){
+            commit('setActiveUserChat', data)
+            return data;
         }
     },
     getters: {
@@ -59,6 +67,9 @@ export default createStore({
         },
         name(state){
             return state.name;
+        },
+        activeUserChat(state){
+            return state.activeUserChat;
         }
     },
 });
