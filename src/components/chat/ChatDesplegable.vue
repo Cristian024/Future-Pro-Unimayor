@@ -7,6 +7,7 @@ import {
 } from '@/common/ui/collapsible'
 import Button from '@/common/ui/button/Button.vue';
 import { ChevronsUpDown } from 'lucide-vue-next';
+import Chat from './Chat.vue';
 
 const isOpen = ref(false)
 
@@ -15,6 +16,10 @@ defineProps({
         type: Object,
         required: true,
         default: { name: 'Usuario' }
+    },
+    chat_id: {
+        type: Object,
+        default: null
     }
 })
 
@@ -34,21 +39,18 @@ defineProps({
             </CollapsibleTrigger>
         </div>
         <CollapsibleContent class="space-y-2">
-            <div class="rounded-md border px-4 py-3 font-mono text-sm">
-                @radix-ui/colors
-            </div>
-            <div class="rounded-md border px-4 py-3 font-mono text-sm">
-                @stitches/react
+            <div class="chat-container h-[50vh]">
+                <Chat v-if="chat_id!=null" :chat="chat_id"/>
             </div>
         </CollapsibleContent>
     </Collapsible>
 </template>
 
 <script>
-
 export default {
     props: {
-        user: null
+        user: null,
+        chat_id: null
     }
 }
 </script>

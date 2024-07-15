@@ -23,9 +23,9 @@ onMounted(async () => {
         </section>
         <section></section>
         <section class="section-3 right-[20px]">
-            <Contacts @showActiveUserChat="listenerActiveUserChat"/>
+            <Contacts @showActiveUserChat="listenerActiveUserChat" @showActiveChat="listenerActiveChat"/>
         </section>
-        <ChatDesplegable class="fixed bottom-[0] right-[20px]" v-if="ActiveUserChat != null" :user="ActiveUserChat"/>
+        <ChatDesplegable class="fixed bottom-[0] right-[20px]" v-if="ActiveUserChat != null" :user="ActiveUserChat" :chat_id="ActiveChatId"/>
     </div>
 </template>
 
@@ -34,7 +34,8 @@ import Contacts from '@/components/Contacts.vue';
 export default {
     data() {
         return {
-            ActiveUserChat: null
+            ActiveUserChat: null,
+            ActiveChatId: null
         }
     },
     components() {
@@ -43,6 +44,9 @@ export default {
     methods: {
         listenerActiveUserChat(value) {
             this.ActiveUserChat = value;
+        },
+        listenerActiveChat(value){
+            this.ActiveChatId = value;
         }
     }
 }
