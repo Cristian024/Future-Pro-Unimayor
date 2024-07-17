@@ -21,33 +21,44 @@ onMounted(() => {
             <div class="message" v-for="(item, index) in messages">
                 <div v-if="item.user_post === user.user_id" class="user_session subcontainer">
                     <p>{{ item.phrase }}</p>
-                    <span>{{ item.userName }}</span>
+                    <span>{{ item.cdate }}</span>
                 </div>
                 <div v-else class="user_external subcontainer">
                     <p>{{ item.phrase }}</p>
-                    <span>{{ item.userName }}</span>
+                    <span>{{ item.cdate }}</span>
                 </div>
             </div>
         </div>
         <form class="input-conversation" v-on:submit="sendMessage($event)">
-            <input type="text" name="chat-input" id="chat-input">
+            <input type="text" v-model="message_to_send" name="chat-input" id="chat-input">
             <input type="submit" value="Enviar">
         </form>
     </div>
 </template>
 
 <script>
+
+import { mapGetters } from 'vuex';
+
 export default {
     props: [
         'chat'
     ],
+    computed: {
+        ...mapGetters(['user']),
+    },
     data() {
         return{
-            messages: null
+            message_to_send: null,
+            messages: null,
+            limit: 50,
+            offset: 0,
+            socket: null
         }
     },
     created() {
-        this.getMessages(this.chat.id)
+        this.getMessages(this.chat.conversation.id,50,0)
+        this.initSocket(this.chat.conversation.id)
     },
     watch: {
         chat(newVal, oldVal) {
@@ -55,9 +66,9 @@ export default {
         }
     },
     methods: {
-        async getMessages(chat_id){
+        async getMessages(chat_id,limit,offset){
             const self = this;
-            await executeInsert('message_by_conversation',{conversation_id: chat_id}).then(
+            await executeInsert('message_by_conversation',{conversation_id: chat_id, limit:limit, offset:offset}).then(
                 function(value){
                     self.messages = value.data;
                 },
@@ -65,6 +76,20 @@ export default {
                     showMessagePopup('Error al cargar los mensajes', 'red')
                 }
             )
+        },
+        async initSocket(chat_id){
+            this.socket = io('http://localhost:3000');
+
+            this.socket.on(`message_event_${this.chat.conversation.id}`, (event)=>{
+                console.log(event);
+                this.messages.push(event.message);
+            })
+        },
+        async sendMessage(event){
+            event.preventDefault();
+            if(this.message_to_send != null || this.message_to_send != ''){
+                this.socket.emit('message_event', {message:this.message_to_send, user_sender: this.user,conversation_id: this.chat.conversation.id})
+            }
         }
     }
 }
