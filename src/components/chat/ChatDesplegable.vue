@@ -9,7 +9,7 @@ import Button from '@/common/ui/button/Button.vue';
 import { ChevronsUpDown } from 'lucide-vue-next';
 import Chat from './Chat.vue';
 
-const isOpen = ref(false)
+const isViewOpen = ref(false)
 
 defineProps({
     user: {
@@ -26,7 +26,7 @@ defineProps({
 </script>
 
 <template>
-    <Collapsible v-model:open="isOpen" class="w-[350px] space-y-2">
+    <Collapsible v-model:open="isViewOpen" class="w-[350px] space-y-2">
         <div class="flex items-center justify-between space-x-4  cursor-pointer rounded-md border">
             <CollapsibleTrigger as-child class="w-full h-full px-4 py-3">
                 <h4 class="">
@@ -40,7 +40,7 @@ defineProps({
         </div>
         <CollapsibleContent class="space-y-2">
             <div class="chat-container h-[50vh]">
-                <Chat v-if="chat_id!=null" :chat="chat_id"/>
+                <Chat v-if="chat_id != null" :chat="chat_id" :is_open="isViewOpen" />
             </div>
         </CollapsibleContent>
     </Collapsible>
@@ -51,7 +51,7 @@ export default {
     props: {
         user: null,
         chat_id: null
-    }
+    },
 }
 </script>
 
