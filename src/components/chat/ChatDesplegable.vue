@@ -9,6 +9,7 @@ import Button from '@/common/ui/button/Button.vue';
 import { ChevronsUpDown } from 'lucide-vue-next';
 import Chat from './Chat.vue';
 
+
 const isViewOpen = ref(false)
 
 defineProps({
@@ -29,8 +30,11 @@ defineProps({
     <Collapsible v-model:open="isViewOpen" class="w-[350px] space-y-2">
         <div class="flex items-center justify-between space-x-4  cursor-pointer rounded-md border">
             <CollapsibleTrigger as-child class="w-full h-full px-4 py-3">
-                <h4 class="">
+                <h4 v-if="user.role == 'enterprise'">
                     {{ user.name }}
+                </h4>
+                <h4 v-else-if="user.role == 'student'">
+                    {{ user.first_name }} {{ user.last_name }}
                 </h4>
                 <Button variant="ghost" size="sm" class="w-9 p-0">
                     <ChevronsUpDown class="h-4 w-4" />

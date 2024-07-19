@@ -17,6 +17,15 @@
 
     --action-loader-background:rgba(255, 255, 255, 0.811);
 
+    --message-external-user-bg: rgb(240, 240, 240);
+    --message-external-user-txt: rgb(0, 0, 0);
+
+    --message-user-user-bg: rgb(212, 170, 0);
+    --message-user-user-txt: rgb(0, 0, 0);
+
+    --input-chat-bg: rgb(231, 231, 231);
+    --input-chat-txt: rgb(0, 0, 0);
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
  
@@ -59,6 +68,15 @@
     --buttons-home-bg: rgb(24, 24, 24);
 
     --action-loader-background:rgba(0, 0, 0, 0.913);
+
+    --message-external-user-bg: rgb(27, 27, 27);
+    --message-external-user-txt: rgb(255, 255, 255);
+
+    --message-user-user-bg: rgb(212, 170, 0);
+    --message-user-user-txt: rgb(0, 0, 0);
+
+    --input-chat-bg: rgb(32, 32, 32);
+    --input-chat-txt: rgb(255, 255, 255);
 
     --muted: 0 0% 8%;
     --muted-foreground: 215 20.2% 65.1%;

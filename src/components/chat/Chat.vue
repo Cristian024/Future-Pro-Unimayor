@@ -1,40 +1,30 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
 import io from "socket.io-client";
-import { useStore } from 'vuex';
 import { executeInsert } from '@/services/api';
 import { showMessagePopup } from '@/lib/toasty';
 import { generateRandomID } from '@/lib/generalUtils'
 import { format } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-
-const store = useStore();
-
-var user = ref({});
-
-onMounted(() => {
-    user.value = computed(() => store.getters.user).value;
-})
+import Message from '@/components/chat/Message.vue'
+import Input from "@/common/ui/input/Input.vue";
+import Button from "@/common/ui/button/Button.vue";
+import { Icon } from "@iconify/vue";
 
 </script>
 
 <template>
-    <div class="chat">
-        <div class="conversations">
-            <div class="message" v-for="(item, index) in messages">
-                <div v-if="item.user_post === user.user_id" class="user_session subcontainer">
-                    <p>{{ item.phrase }}</p>
-                    <span>{{ item.cdate }}</span>
-                </div>
-                <div v-else class="user_external subcontainer">
-                    <p>{{ item.phrase }}</p>
-                    <span>{{ item.cdate }}</span>
-                </div>
+    <div class="chat w-full h-full grid grid-cols-1 grid-rows-2 pb-2 gap-2">
+        <div class="conversations overflow-y-auto row-span-2 scroll-smooth" v-scroll-to-bottom="messages">
+            <div class="message w-full flex items-center" v-for="(item, index) in messages">
+                <Message :user="user" :message="item" />
             </div>
         </div>
         <form class="input-conversation" v-on:submit="sendMessage($event)">
-            <input type="text" v-model="message_to_send" name="chat-input" id="chat-input">
-            <input type="submit" value="Enviar">
+            <Input type="text" v-model="message_to_send" name="chat-input" id="chat-input" />
+            <Button type="submit">
+                <Icon icon="radix-icons:paper-plane" variant="ghost"
+                    class="w-[15px] h-[15px] rotate-0 scale-100 transition-all" />
+            </Button>
         </form>
     </div>
 </template>
@@ -74,6 +64,12 @@ export default {
             }
         }
     },
+    directives: {
+        scrollToBottom(el, binding) {
+            console.log(binding.oldValue === binding.value);
+            el.scrollTop = el.scrollHeight;
+        }
+    },
     methods: {
         async getMessages(chat_id, limit, offset) {
             const self = this;
@@ -95,16 +91,21 @@ export default {
                 switch (state_msg) {
                     case 'sended': {
                         const msg_bonding_index = this.messages.findIndex(msg => msg.id === event.msg_temp_id);
-                        if (msg_bonding_index !== -1) {
-                            this.messages.splice(msg_bonding_index, 1, event.message);
-                        } else {
-                            const msg_sended_index = this.messages.findIndex(msg => msg.id = event.message.id);
-                            if (msg_sended_index !== -1) {
-                                this.messages.push(event.message);
+                        if (this.messages.length > 0) {
+                            if (msg_bonding_index !== -1) {
+                                this.messages.splice(msg_bonding_index, 1, event.message);
                             } else {
-                                showMessagePopup('Error al envía el mensaje', 'red');
+                                const msg_sended_index = this.messages.findIndex(msg => msg.id = event.message.id);
+                                if (msg_sended_index !== -1) {
+                                    this.messages.push(event.message);
+                                } else {
+                                    showMessagePopup('Error al envía el mensaje', 'red');
+                                }
                             }
+                        } else {
+                            this.messages.push(event.message)
                         }
+
                         break;
                     }
                 }
@@ -112,7 +113,7 @@ export default {
         },
         async sendMessage(event) {
             event.preventDefault();
-            if (this.message_to_send != null || this.message_to_send != '') {
+            if (this.message_to_send != null && this.message_to_send != '') {
                 const msg_temp_id = generateRandomID(10);
                 const date = new Date();
                 const zonedDate = toZonedTime(date, 'America/Bogota');
@@ -138,104 +139,30 @@ export default {
                 this.socket.emit('message_event', message_event)
                 this.message_to_send = '';
             }
-        }
+        },
+
     }
 }
 </script>
 
 <style scoped>
-.chat {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.chat .conversations {
-    height: calc(100% - 50px);
-    width: 100%;
-    overflow-y: scroll;
-    scroll-behavior: smooth;
-}
-
-.conversations .message {
-    width: 100%;
-    display: flex;
-    align-items: center;
-}
-
-.conversations .message .subcontainer {
-    max-width: 45%;
-    width: fit-content;
-    height: auto;
-    margin: 10px;
-    border-radius: 1vmin;
-    padding: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-}
-
-.message .subcontainer p {
-    font-size: 2.5vmin;
-    height: auto;
-    text-align: left;
-    max-width: 100%;
-    width: 100%;
-    word-wrap: break-word;
-}
-
-.message .subcontainer span {
-    font-size: 1.5vmin;
-    width: 100%;
-}
-
-.conversations .message .subcontainer.user_session {
-    background-color: rgb(169, 137, 6);
-    color: black;
-    margin-left: auto;
-}
-
-.conversations .message .subcontainer.user_external {
-    background-color: rgb(24, 24, 24);
-    color: white;
-    margin-right: auto;
-}
-
-.conversations .message .subcontainer.user_session span {
-    text-align: right;
-}
-
-.conversations .message .subcontainer.user_external span {
-    text-align: left;
-}
-
 .chat .input-conversation {
     width: 100%;
     height: 40px;
     display: grid;
-    grid-template-columns: 80% 20%;
-}
-
-.chat .input-conversation input[type='submit'] {
-    background-color: black;
-    color: white;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-    margin: 0 10px;
-    border-radius: 2vmin;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 15px;
+    padding: 0 10px;
 }
 
 #chat-input {
     font-size: 15px;
-    border-radius: 2vmin;
-    margin: 0 10px;
-    background-color: rgb(19, 19, 19);
+    background-color: var(--input-chat-bg);
     border: none;
-    color: white;
+    outline-style: none;
+    outline: none;
+    border-style: none;
+    color: var(--input-chat-txt);
+    grid-column: span 3;
 }
 </style>
