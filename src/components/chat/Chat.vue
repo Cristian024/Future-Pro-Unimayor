@@ -19,8 +19,8 @@ import { Icon } from "@iconify/vue";
                 <Message :user="user" :message="item" />
             </div>
         </div>
-        <form class="input-conversation" v-on:submit="sendMessage($event)">
-            <Input type="text" v-model="message_to_send" name="chat-input" id="chat-input" />
+        <form class="w-full h-[40px] grid grid-cols-4 gap-2 pl-[5px] pr-[5px]" v-on:submit="sendMessage($event)">
+            <Input type="text" v-model="message_to_send" class="col-span-3" name="chat-input" id="chat-input" />
             <Button type="submit">
                 <Icon icon="radix-icons:paper-plane" variant="ghost"
                     class="w-[15px] h-[15px] rotate-0 scale-100 transition-all" />
@@ -146,14 +146,6 @@ export default {
 </script>
 
 <style scoped>
-.chat .input-conversation {
-    width: 100%;
-    height: 40px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 15px;
-    padding: 0 10px;
-}
 
 #chat-input {
     font-size: 15px;
@@ -163,6 +155,5 @@ export default {
     outline: none;
     border-style: none;
     color: var(--input-chat-txt);
-    grid-column: span 3;
 }
 </style>
