@@ -32,6 +32,7 @@ import { Icon } from "@iconify/vue";
 <script>
 
 import { mapGetters } from 'vuex';
+import messageNotification from '@/assets/sounds/message_notification.mp3'
 
 export default {
     props: [
@@ -93,21 +94,20 @@ export default {
                         const msg_bonding_index = this.messages.findIndex(msg => msg.id === event.msg_temp_id);
                         if (this.messages.length > 0) {
                             if (msg_bonding_index !== -1) {
+                                this.playNotificationSound(event.message.user_post);
                                 this.messages.splice(msg_bonding_index, 1, event.message);
                             } else {
-                                const msg_sended_index = this.messages.findIndex(msg => msg.id = event.message.id);
-                                if (msg_sended_index !== -1) {
-                                    this.messages.push(event.message);
-                                } else {
-                                    showMessagePopup('Error al envía el mensaje', 'red');
-                                }
+                                this.playNotificationSound(event.message.user_post);
+                                this.messages.push(event.message);
                             }
                         } else {
+                            this.playNotificationSound(event.message.user_post);
                             this.messages.push(event.message)
                         }
 
                         break;
                     }
+
                 }
             })
         },
@@ -135,12 +135,17 @@ export default {
                     state: 'bonding'
                 }
 
-                this.messages.push(msg_temp)
+                await this.messages.push(msg_temp);
                 this.socket.emit('message_event', message_event)
                 this.message_to_send = '';
             }
         },
-
+        playNotificationSound(user_post) {
+            if (this.user.user_id != user_post) {
+                const audio = new Audio(messageNotification);
+                audio.play();
+            }
+        }
     }
 }
 </script>
