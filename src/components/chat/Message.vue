@@ -7,9 +7,10 @@ import { Icon } from '@iconify/vue';
         <p>{{ message.phrase }}</p>
         <span class="flex items-center justify-end">
             {{ message.cdate }}
-            <Icon icon="radix-icons:circle" v-if="message.state == 'bonding'" class="ml-[5px]" />
-            <Icon icon="radix-icons:check-circled" v-else-if="message.state == 'sended'" class="ml-[5px]"/>
+            <Icon icon="radix-icons:clock" v-if="message.state == 'bonding'" class="ml-[5px]" />
+            <Icon icon="radix-icons:circle" v-else-if="message.state == 'sended'" class="ml-[5px]"/>
             <Icon icon="radix-icons:cross-circled" v-else-if="message.state == 'failed'" class="ml-[5px]"/>
+            <Icon icon="radix-icons:check-circled" v-else-if="message.state == 'viewed'" class="ml-[5px]"/>
         </span>
     </div>
     <div v-else class="user_external subcontainer text-left">
