@@ -29,6 +29,7 @@ defineProps({
 
         <h2 class="ml-[10px]" v-if="user != null">
             {{ user.first_name }} {{ user.last_name }}
+            {{ user.name }}
         </h2>
         <h2 class="ml-[10px]" v-else>
             Invitado
