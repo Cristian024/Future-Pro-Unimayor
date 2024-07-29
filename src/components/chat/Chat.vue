@@ -1,6 +1,6 @@
 <script setup>
 import io from "socket.io-client";
-import { executeInsert } from '@/services/api';
+import { executeInsert, executeUpdate } from '@/services/api';
 import { showMessagePopup } from '@/lib/toasty';
 import { generateRandomID } from '@/lib/generalUtils'
 import { format } from 'date-fns';
@@ -77,6 +77,7 @@ export default {
             await executeInsert('message_by_conversation', { conversation_id: chat_id, limit: limit, offset: offset }).then(
                 function (value) {
                     self.messages = value.data;
+                    self.updateStateMessagesToViewed(self.messages);
                 },
                 function (error) {
                     showMessagePopup('Error al cargar los mensajes', 'red')
@@ -86,7 +87,7 @@ export default {
         async initSocket(chat_id) {
             this.socket = io('http://localhost:3000');
 
-            this.socket.on(`message_event_${this.chat.conversation.id}`, (event) => {
+            this.socket.on(`incoming_message_event_${this.chat.conversation.id}`, (event) => {
                 const state_msg = event.message.state
 
                 switch (state_msg) {
@@ -104,10 +105,23 @@ export default {
                             this.playNotificationSound(event.message.user_post);
                             this.messages.push(event.message)
                         }
+                        this.updateStateMessagesToViewed(this.messages)
 
                         break;
                     }
 
+                }
+            })
+
+            this.socket.on(`state_message_event_${this.chat.conversation.id}`, (event) => {
+                console.log('Entra evento', event);
+                if (event.affected_rows > 0) {
+                    event.list.forEach(message => {
+                        const index = this.messages.findIndex(msg => msg.id.toString() === message.toString());
+                        if (index !== -1) {
+                            this.messages[index].state = event.state
+                        }
+                    });
                 }
             })
         },
@@ -119,11 +133,14 @@ export default {
                 const zonedDate = toZonedTime(date, 'America/Bogota');
                 const formattedDate = format(zonedDate, 'yyyy-MM-dd HH:mm:ss');
 
-                const message_event = {
-                    message: this.message_to_send,
-                    user_sender: this.user,
-                    conversation_id: this.chat.conversation.id,
-                    msg_temp_id: msg_temp_id
+                const event = {
+                    type: 'insert',
+                    message: {
+                        phrase: this.message_to_send,
+                        user_sender: this.user,
+                        conversation_id: this.chat.conversation.id,
+                        msg_temp_id: msg_temp_id
+                    }
                 }
 
                 const msg_temp = {
@@ -136,7 +153,7 @@ export default {
                 }
 
                 await this.messages.push(msg_temp);
-                this.socket.emit('message_event', message_event)
+                this.socket.emit('message_event', event)
                 this.message_to_send = '';
             }
         },
@@ -145,13 +162,35 @@ export default {
                 const audio = new Audio(messageNotification);
                 audio.play();
             }
+        },
+        async updateStateMessagesToViewed(messages) {
+            const msgnotviewed = []
+            messages.forEach(element => {
+                if (element.state === 'sended' && element.user_post != this.user.user_id) {
+                    msgnotviewed.push(element)
+                }
+            });
+
+            console.log(msgnotviewed);
+
+            if (msgnotviewed.length > 0) {
+                const event = {
+                    type: 'update_state_to_viewed',
+                    messages: {
+                        list: msgnotviewed,
+                        conversation_id: this.chat.conversation.id,
+                        user_sender: this.user,
+                    }
+                }
+
+                this.socket.emit('message_event', event);
+            }
         }
     }
 }
 </script>
 
 <style scoped>
-
 #chat-input {
     font-size: 15px;
     background-color: var(--input-chat-bg);
