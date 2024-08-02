@@ -14,7 +14,7 @@ import { Icon } from "@iconify/vue";
 
 <template>
     <div class="chat w-full h-full grid grid-cols-1 grid-rows-2 pb-2 gap-2">
-        <div class="conversations overflow-y-auto row-span-2 scroll-smooth" v-scroll-to-bottom="messages">
+        <div class="conversations overflow-y-auto row-span-2" ref="chat_container" @scroll="getMessagesOnScroll($event)">
             <div class="message w-full flex items-center" v-for="(item, index) in messages">
                 <Message :user="user" :message="item" />
             </div>
@@ -46,13 +46,15 @@ export default {
         return {
             message_to_send: null,
             messages: null,
-            limit: 50,
+            limit: 10,
             offset: 0,
-            socket: null
+            socket: null,
+            fullScrollTop: false,
+            incomingMessage: false
         }
     },
     created() {
-        this.getMessages(this.chat.conversation.id, 50, 0);
+        this.getMessages(this.chat.conversation.id, this.limit, this.offset);
         this.initSocket(this.chat.conversation.id);
     },
     watch: {
@@ -63,12 +65,12 @@ export default {
             if (newVal === false) {
                 this.socket.disconnect();
             }
-        }
-    },
-    directives: {
-        scrollToBottom(el, binding) {
-            console.log(binding.oldValue === binding.value);
-            el.scrollTop = el.scrollHeight;
+        },
+        incomingMessage(newVal, oldVal) {
+            if (newVal === true) {
+                this.$refs.chat_container.scrollTop = this.$refs.chat_container.scrollHeight;
+                this.incomingMessage = false;
+            }
         }
     },
     methods: {
@@ -76,13 +78,53 @@ export default {
             const self = this;
             await executeInsert('message_by_conversation', { conversation_id: chat_id, limit: limit, offset: offset }).then(
                 function (value) {
-                    self.messages = value.data;
+                    self.offset = self.limit;
+                    self.messages = value.data.reverse();
                     self.updateStateMessagesToViewed(self.messages);
+
+                    self.$nextTick(() => {
+                        self.$refs.chat_container.scrollTop = self.$refs.chat_container.scrollHeight;
+                    })
                 },
                 function (error) {
                     showMessagePopup('Error al cargar los mensajes', 'red')
                 }
             )
+        },
+        async getMessagesOnScroll(e) {
+            if (!this.fullScrollTop && e.target.scrollTop === 0) {
+                this.fullScrollTop = true;
+                const self = this;
+                const countmsg = this.chat.count_messages;
+                const chat_id = this.chat.conversation.id;
+                const limit = this.limit;
+
+                const oldScrollHeight = e.target.scrollHeight;
+
+                if (!(this.offset >= countmsg)) {
+                    await executeInsert('message_by_conversation', { conversation_id: chat_id, limit: limit, offset: this.offset }).then(
+                        function (value) {
+                            self.messages = value.data.reverse().concat(self.messages);
+                            self.updateStateMessagesToViewed(self.messages)
+
+                            self.$nextTick(() => {
+                                const newScrollHeight = e.target.scrollHeight;
+                                const heightDifference = newScrollHeight - oldScrollHeight;
+
+                                e.target.scrollTop = heightDifference;
+                            });
+                        },
+                        function (error) {
+                            showMessagePopup('Error al cargar los mensajes', 'red')
+                        }
+                    ).finally(
+                        function () {
+                            self.offset += self.limit;
+                        }
+                    )
+                }
+                self.fullScrollTop = false;
+            }
         },
         async initSocket(chat_id) {
             this.socket = io('http://localhost:3000');
@@ -106,6 +148,10 @@ export default {
                             this.messages.push(event.message)
                         }
                         this.updateStateMessagesToViewed(this.messages)
+
+                        this.$nextTick(() => {
+                            this.incomingMessage = true;
+                        })
 
                         break;
                     }
@@ -170,8 +216,6 @@ export default {
                     msgnotviewed.push(element)
                 }
             });
-
-            console.log(msgnotviewed);
 
             if (msgnotviewed.length > 0) {
                 const event = {
