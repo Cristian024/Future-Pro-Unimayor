@@ -14,7 +14,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/api': {
-        target: '',
+        target: 'https://uni-api-puce.vercel.app/api/index.php',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       }

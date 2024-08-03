@@ -201,6 +201,10 @@ export default {
                 await this.messages.push(msg_temp);
                 this.socket.emit('message_event', event)
                 this.message_to_send = '';
+
+                this.$nextTick(() => {
+                    this.incomingMessage = true;
+                })
             }
         },
         playNotificationSound(user_post) {
