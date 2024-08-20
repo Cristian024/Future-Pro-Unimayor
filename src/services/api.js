@@ -9,14 +9,14 @@ const exceptionCode500 = {
     error: 'Internal server error'
 }
 
-export const executeConsult = async (route, id) =>{
-    return new Promise(async function (resolve, reject){
+export const executeConsult = async (route, id) => {
+    return new Promise(async function (resolve, reject) {
         var data;
         var consultUrl = url;
 
-        if (id !== null) consultUrl += `/${id}`
-
         consultUrl += `?route=${route}`;
+
+        if (id !== null) consultUrl += `&id=${id}`
 
         try {
             const response = await fetch(consultUrl, {
@@ -32,7 +32,7 @@ export const executeConsult = async (route, id) =>{
                 return JSON.parse(res);
             })
 
-            if(data_response.code >= 400 && data_response.code <= 501){
+            if (data_response.code >= 400 && data_response.code <= 501) {
                 reject(data_response)
             }
 
@@ -43,8 +43,8 @@ export const executeConsult = async (route, id) =>{
     })
 }
 
-export const executeInsert = async (route, data) =>{
-    return new Promise(async function(resolve, reject){
+export const executeInsert = async (route, data) => {
+    return new Promise(async function (resolve, reject) {
         const insertUrl = url + `?route=${route}`;
         try {
             const response = await fetch(insertUrl, {
@@ -61,7 +61,7 @@ export const executeInsert = async (route, data) =>{
                 return JSON.parse(res);
             })
 
-            if(data_response.code >= 400 && data_response.code <= 501){
+            if (data_response.code >= 400 && data_response.code <= 501) {
                 reject(data_response)
             }
 
@@ -72,8 +72,8 @@ export const executeInsert = async (route, data) =>{
     })
 }
 
-export const executeUpdate = async (route, data, id) =>{
-    return new Promise(async function(resolve, reject){
+export const executeUpdate = async (route, data, id) => {
+    return new Promise(async function (resolve, reject) {
         const updateUrl = url + `/${id}?route=${route}`;
         try {
             const response = await fetch(updateUrl, {
@@ -90,7 +90,7 @@ export const executeUpdate = async (route, data, id) =>{
                 return JSON.parse(res);
             })
 
-            if(data_response.code >= 400 && data_response.code <= 501){
+            if (data_response.code >= 400 && data_response.code <= 501) {
                 reject(data_response)
             }
 

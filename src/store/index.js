@@ -7,20 +7,24 @@ export default createStore({
         name: null,
         session: null,
         user: null,
-        activeUserChat: null
+        activeUserChat: null,
+        isLoading: false
     },
     mutations: {
-        setName(state, name){
+        setName(state, name) {
             state.name = name;
         },
         setSession(state, session) {
             state.session = session;
         },
-        setUser(state, user){
+        setUser(state, user) {
             state.user = user;
         },
-        setActiveUserChat(state, activeUserChat){
+        setActiveUserChat(state, activeUserChat) {
             state.activeUserChat = activeUserChat
+        },
+        setLoading(state, isLoading) {
+            state.isLoading = isLoading;
         }
     },
     actions: {
@@ -29,31 +33,31 @@ export default createStore({
             commit('setSession', session);
             return session;
         },
-        async temporalSession({commit}){
+        async temporalSession({ commit }) {
             const session = createTemporalSession();
             commit('setSession', session);
             return session;
         },
-        async consultUser({commit}, data){
+        async consultUser({ commit }, data) {
             var user = null;
             await executeConsult(`${data.type}_by_user_id`, data.user_id).then(
-                function(value){
-                    if(value.data.length > 0){
+                function (value) {
+                    if (value.data.length > 0) {
                         user = value.data[0];
                     }
                 },
-                function(error){
+                function (error) {
                     user = null;
                 }
             )
             commit('setUser', user)
             return user;
         },
-        setName({commit}, name){
+        setName({ commit }, name) {
             commit('setName', name)
             return name;
         },
-        async activeUserChat({commit}, data){
+        async activeUserChat({ commit }, data) {
             commit('setActiveUserChat', data)
             return data;
         }
@@ -62,14 +66,17 @@ export default createStore({
         session(state) {
             return state.session;
         },
-        user(state){
+        user(state) {
             return state.user
         },
-        name(state){
+        name(state) {
             return state.name;
         },
-        activeUserChat(state){
+        activeUserChat(state) {
             return state.activeUserChat;
+        },
+        isLoading(state){
+            return state.isLoading;
         }
     },
 });

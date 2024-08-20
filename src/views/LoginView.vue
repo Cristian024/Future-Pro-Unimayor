@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import * as api from '../services/api';
 import { showMessagePopup } from '@/lib/toasty';
 import { navigate } from '@/lib/navigation';
-import ActionLoader from '@/components/ActionLoader.vue';
+import ActionLoader from '@/components/loaders/ActionLoader.vue';
 import { ref } from 'vue';
 
 var messageLoader = ref("")

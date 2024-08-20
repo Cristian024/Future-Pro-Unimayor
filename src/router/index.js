@@ -10,6 +10,9 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     store.dispatch('setName', to.name);
+
+    store.commit('setLoading', 0);
+
     if (to.matched.some(route => route.meta.requireAuto)) {
         const hasCookie = validateSessionCookie();
         if (hasCookie) {
@@ -17,23 +20,27 @@ router.beforeEach(async (to, from, next) => {
             const session = await store.dispatch('validateSession', type);
 
             if (session.valid) {
-                await store.dispatch('consultUser', {type: type, user_id: session.user_id})
+                await store.dispatch('consultUser', { type: type, user_id: session.user_id })
                 next();
-            } else if(!session.valid && to.meta.autoOptional){
+            } else if (!session.valid && to.meta.autoOptional) {
                 next();
-            } else if(!session.valid && !to.meta.autoOptional){
+            } else if (!session.valid && !to.meta.autoOptional) {
                 next('/login');
             }
-        } else if(to.meta.autoOptional) {
+        } else if (to.meta.autoOptional) {
             await store.dispatch('temporalSession');
             next();
-        } else{
+        } else {
             next('/');
         }
     } else {
         next();
     }
 });
+
+router.afterEach(() => {
+    store.commit('setLoading', 1);
+})
 
 
 export default router;

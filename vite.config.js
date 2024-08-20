@@ -9,7 +9,7 @@ export default defineConfig({
   server:{
     proxy: {
       '/apiDev': {
-        target: 'http://localhost/uniApi/api/Index.php',
+        target: 'http://localhost:8000/src/test/httpController.php',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
